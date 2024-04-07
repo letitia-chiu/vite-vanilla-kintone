@@ -1,0 +1,22 @@
+{
+  "name": "vite-vanilla-kintone",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "vitest": "vitest",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@kintone/plugin-uploader": "^9.0.5",
+    "@kintone/dts-gen": "^8.0.7",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    
+  }
+}

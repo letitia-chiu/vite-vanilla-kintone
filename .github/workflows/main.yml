@@ -1,0 +1,61 @@
+name: Deploy to Kintone
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: NPM ci and cacheing
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+
+  unittest:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Cache Node Module
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+      
+      - name: Run unit tests
+        run: npm run vitest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [unittest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Get Cache Node Module
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+
+      - name: Install @kintone/customize-uploader
+        run: npm install -g @kintone/customize-uploader
+
+      - name: Upload to Kintone
+        run: |
+          npm run build
+          kintone-customize-uploader --base-url ${{ secrets.KINTONE_BASE_URL }} --username ${{ secrets.KINTONE_USERNAME }} --password ${{ secrets.KINTONE_PASSWORD }} manifest.json
